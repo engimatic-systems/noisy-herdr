@@ -71,6 +71,19 @@ class ClassifierTests(unittest.TestCase):
         changed = self.classify(QUESTION.replace("› 1.", "  1.").replace("  2.", "› 2."))
         self.assertEqual(first.identity, changed.identity)
 
+    def test_native_focus_is_carried_for_every_alert_category(self):
+        for focused in (True, False, None, "true"):
+            for text, status, expected in ((QUESTION, "blocked", "questions"),
+                                           (APPROVAL, "blocked", "approvals"),
+                                           ("All done.", "idle", "finished"),
+                                           ("Still working.", "working", "narration")):
+                with self.subTest(focused=focused, category=expected):
+                    info = {"agent": "codex", "agent_status": status, "focused": focused,
+                            "completion_seq": 14, "state_change_seq": 14}
+                    result = classify_view(text, info, status)
+                    self.assertEqual(result.category, expected)
+                    self.assertIs(result.foreground, focused if type(focused) is bool else None)
+
     def test_stale_dialog_far_above_footer_is_not_interactive(self):
         text = QUESTION + "\n".join("ordinary output " + str(i) for i in range(12))
         self.assertEqual(self.classify(text).category, "narration")

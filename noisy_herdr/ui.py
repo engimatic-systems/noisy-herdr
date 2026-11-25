@@ -54,7 +54,7 @@ class Panel:
 
     @property
     def controls(self):
-        return ["enabled", "minus", "slider", "plus", *[s[0] for s in SOUNDS],
+        return ["enabled", "foreground", "background", "minus", "slider", "plus", *[s[0] for s in SOUNDS],
                 "preview", "finished", "questions", "approvals", "narration", "close"]
 
     def save(self, **changes):
@@ -75,7 +75,7 @@ class Panel:
             elif control == "slider" and x is not None:
                 _, start, length = self.slider
                 self.save(volume=max(0, min(100, round(100 * (x - start) / (length - 1)))))
-            elif control in ("finished", "narration", "questions", "approvals"):
+            elif control in ("foreground", "background", "finished", "narration", "questions", "approvals"):
                 self.save(**{control: not self.current[control]})
             elif control in {sound[0] for sound in SOUNDS}:
                 self.save(sound=control)
@@ -119,11 +119,13 @@ class Panel:
         right = min(width - 3, 73)
         self.put(1, 3, "(o)  NOISY HERDR", accent | curses.A_BOLD)
         self.button(1, right - 9, "[ Close ]", "close", dim)
-        self.put(2, 3, "A little bing when your agents are ready.", dim)
+        self.put(2, 3, "Fine-grained sound notifications for your agents.", dim)
         enabled = self.current["enabled"]
         self.button(4, 3, "Sound alerts    [ " + ("ON " if enabled else "OFF") + " ]", "enabled",
                     accent | curses.A_BOLD)
-        self.put(5, 3, "Plays in foreground and background.", dim)
+        self.button(5, 3, ("[x]" if self.current["foreground"] else "[ ]") + " Foreground", "foreground")
+        self.button(5, 28, ("[x]" if self.current["background"] else "[ ]") + " Background", "background")
+        self.put(6, 3, "Foreground = Herdr's selected agent pane.", dim)
         self.put(7, 3, "VOLUME", curses.A_BOLD)
         self.button(7, 12, "[-]", "minus")
         length = max(12, right - 34)

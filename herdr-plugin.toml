@@ -1,8 +1,8 @@
 id = "noisy-herdr"
 name = "Noisy Herdr"
-version = "0.2.0"
+version = "0.3.0"
 min_herdr_version = "0.9.3"
-description = "A Pomodoro bing for your agents, even while you're looking. Click to choose a sound, set volume, or turn it off."
+description = "Fine-grained control of sound notifications: alert categories, foreground and background, five original sounds, and volume."
 platforms = ["macos", "linux"]
 
 [[actions]]

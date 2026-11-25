@@ -9,6 +9,17 @@ from .classify import inspect_event
 from .storage import atomic_json, load_json, locked, session_key, settings, state_dir
 
 
+def context_allows(current, foreground):
+    """Native Herdr focus: the selected agent pane versus all other panes."""
+    if foreground is True:
+        return current["foreground"]
+    if foreground is False:
+        return current["background"]
+    # Preserve the default behavior when no focus restriction is requested;
+    # with a restriction, don't guess which context an unknown pane belongs to.
+    return current["foreground"] and current["background"]
+
+
 def advance(previous, status, observation=None):
     """Unknown preserves history; done -> idle means seen, not a second finish."""
     if status not in ("working", "blocked", "idle", "done"):
@@ -79,7 +90,8 @@ def handle_event(event):
             state = dict(sorted(state.items(), key=lambda item: item[1]["updated"])[-1024:])
         atomic_json(path, state)
     current = settings()
-    if alert and current["enabled"] and current[alert] and current["volume"]:
+    if (alert and current["enabled"] and current[alert] and current["volume"]
+            and context_allows(current, observation.foreground)):
         audio.play(current["sound"], current["volume"])
     return alert
 

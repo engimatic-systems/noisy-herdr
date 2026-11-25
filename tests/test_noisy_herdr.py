@@ -46,6 +46,59 @@ class EventTests(Isolated):
         self.inspect = inspect.start()
         self.addCleanup(inspect.stop)
 
+    def test_foreground_and_background_policy_combinations(self):
+        for foreground in (False, True):
+            for background in (False, True):
+                prefs = dict(storage.DEFAULTS, foreground=foreground, background=background)
+                for context in (True, False, None):
+                    expected = (foreground if context is True else background if context is False
+                                else foreground and background)
+                    with self.subTest(foreground=foreground, background=background, context=context):
+                        self.assertEqual(events.context_allows(prefs, context), expected)
+
+    @patch("noisy_herdr.audio.play")
+    def test_context_filter_combines_with_categories_and_does_not_replay(self, play):
+        storage.update_settings(foreground=False, background=True)
+        self.inspect.side_effect = None
+        # A foreground completion is consumed while muted.
+        self.inspect.return_value = Observation("finished", "100", True)
+        events.handle_event(self.event("working"))
+        events.handle_event(self.event("idle"))
+        play.assert_not_called()
+        storage.update_settings(foreground=True)
+        events.handle_event(self.event("idle"))
+        play.assert_not_called()
+        # An enabled category in the allowed background still rings.
+        storage.update_settings(foreground=False)
+        self.inspect.return_value = Observation("questions", "q1", False)
+        events.handle_event(self.event("blocked"))
+        play.assert_called_once()
+        # Category and context switches must both allow an alert.
+        storage.update_settings(questions=False)
+        self.inspect.return_value = Observation("questions", "q2", False)
+        events.handle_event(self.event("blocked"))
+        self.assertEqual(play.call_count, 1)
+        self.inspect.return_value = Observation("approvals", "a1", True)
+        events.handle_event(self.event("blocked"))
+        self.assertEqual(play.call_count, 1)
+
+    @patch("noisy_herdr.audio.play")
+    def test_foreground_only_and_both_off(self, play):
+        storage.update_settings(foreground=True, background=False)
+        self.inspect.side_effect = None
+        self.inspect.return_value = Observation("approvals", "a1", False)
+        events.handle_event(self.event("blocked"))
+        play.assert_not_called()
+        self.inspect.return_value = Observation("approvals", "a2", True)
+        events.handle_event(self.event("blocked"))
+        play.assert_called_once()
+        storage.update_settings(foreground=False)
+        self.inspect.return_value = Observation("questions", "q1", True)
+        events.handle_event(self.event("blocked"))
+        self.inspect.return_value = Observation("questions", "q2", False)
+        events.handle_event(self.event("blocked"))
+        self.assertEqual(play.call_count, 1)
+
     @patch("noisy_herdr.audio.play")
     def test_foreground_idle_and_background_done_each_ring_once(self, play):
         for final, pane in (("idle", "w1:p1"), ("done", "w1:p2")):
@@ -206,6 +259,29 @@ class EventTests(Isolated):
 
 
 class SettingsTests(Isolated):
+    def test_existing_preferences_default_to_sounds_in_both_contexts(self):
+        path = storage.config_dir() / "settings.json"
+        path.parent.mkdir()
+        path.write_text(json.dumps({"enabled": False, "sound": "glass", "volume": 45,
+                                    "questions": False, "narration": True}))
+        result = storage.update_settings()
+        self.assertTrue(result["foreground"])
+        self.assertTrue(result["background"])
+        self.assertEqual((result["sound"], result["volume"]), ("glass", 45))
+        self.assertFalse(result["enabled"])
+        self.assertFalse(result["questions"])
+        self.assertTrue(result["narration"])
+
+    def test_foreground_and_background_are_validated_and_persisted_independently(self):
+        storage.update_settings(foreground=False)
+        self.assertFalse(storage.settings()["foreground"])
+        self.assertTrue(storage.settings()["background"])
+        storage.update_settings(background=False)
+        self.assertFalse(storage.settings()["background"])
+        for name in ("foreground", "background"):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                storage.update_settings(**{name: "off"})
+
     def test_legacy_attention_migrates_to_questions_and_approvals_only(self):
         path = storage.config_dir() / "settings.json"
         path.parent.mkdir()
