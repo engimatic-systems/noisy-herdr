@@ -1,12 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="680" height="504" viewBox="0 0 680 504" role="img" aria-label="Noisy Herdr settings: volume, sounds, finished tasks, questions, approvals, and narration switched off">
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="504" viewBox="0 0 680 504" role="img" aria-label="Noisy Herdr settings with foreground and background enabled, sound and volume controls, and separate event categories">
 <rect width="680" height="504" rx="14" fill="#191b1b"/>
 <g font-family="Menlo,Consolas,monospace" font-size="13">
 <text x="48.6" y="40" fill="#f0e7d1" font-weight="700" xml:space="preserve">(o)  NOISY HERDR</text>
 <text x="548.8" y="40" fill="#9b9b91" font-weight="400" xml:space="preserve">[ Close ]</text>
-<text x="48.6" y="57" fill="#9b9b91" font-weight="400" xml:space="preserve">A little bing when your agents are ready.</text>
+<text x="48.6" y="57" fill="#9b9b91" font-weight="400" xml:space="preserve">Fine-grained sound notifications for your agents.</text>
 <rect x="46.6" y="78" width="192.6" height="18" rx="3" fill="#e9a16a"/>
 <text x="48.6" y="91" fill="#191b1b" font-weight="700" xml:space="preserve">Sound alerts    [ ON  ]</text>
-<text x="48.6" y="108" fill="#9b9b91" font-weight="400" xml:space="preserve">Plays in foreground and background.</text>
+<text x="48.6" y="108" fill="#f0e7d1" font-weight="400" xml:space="preserve">[x] Foreground</text>
+<text x="253.6" y="108" fill="#f0e7d1" font-weight="400" xml:space="preserve">[x] Background</text>
+<text x="48.6" y="125" fill="#9b9b91" font-weight="400" xml:space="preserve">Foreground = Herdr&#x27;s selected agent pane.</text>
 <text x="48.6" y="142" fill="#f0e7d1" font-weight="700" xml:space="preserve">VOLUME</text>
 <text x="122.4" y="142" fill="#f0e7d1" font-weight="400" xml:space="preserve">[-]</text>
 <text x="163.4" y="142" fill="#f0e7d1" font-weight="700" xml:space="preserve">=======================O---------------</text>

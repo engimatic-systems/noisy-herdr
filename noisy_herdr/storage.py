@@ -18,8 +18,9 @@ SOUNDS = (
 )
 SOUND_IDS = {item[0] for item in SOUNDS}
 DEFAULTS = {"enabled": True, "volume": 60, "sound": "pomodoro",
+            "foreground": True, "background": True,
             "finished": True, "narration": False, "questions": True, "approvals": True}
-BOOLEAN_SETTINGS = ("enabled", "finished", "narration", "questions", "approvals")
+BOOLEAN_SETTINGS = ("enabled", "foreground", "background", "finished", "narration", "questions", "approvals")
 
 
 def herdr_config_dir():

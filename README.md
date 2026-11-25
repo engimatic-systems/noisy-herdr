@@ -1,12 +1,30 @@
 # Noisy Herdr
 
-A bright **Pomodoro bing** when your agent finishes, even in the tab you're
-watching. Five original sounds, a mouse-controlled on/off switch, previews,
-and an independent volume control. Python 3.9+; no Python packages to install.
+**Fine-grained control for sound notifications in Herdr.** Choose which events
+ring, enable foreground and background sounds independently, and pick the sound
+and volume. Five original sounds with previews and mouse controls, including a
+Pomodoro-style bing. Python 3.9+; no Python packages to install.
 
 ![Controls](docs/controls.svg)
 
-## Install locally
+## Install
+
+Install directly from GitHub:
+
+```sh
+herdr plugin install engimatic-systems/noisy-herdr
+```
+
+Then turn off Herdr's built-in sounds in **Settings > Sound** to prevent
+duplicate chimes, and open the plugin's controls with:
+
+```sh
+herdr plugin action invoke noisy-herdr.settings
+```
+
+Or clone the repository and use the local installer described below.
+
+### Local installation
 
 Requires Herdr **0.9.3 or newer**. On macOS, Python 3 and the built-in `afplay`
 are enough. Linux also needs `paplay`, `pw-play`, `aplay`, `ffplay`, or `mpv`.
@@ -29,6 +47,17 @@ alerts on or off. Choose a sound by clicking its row; it previews immediately.
 Click anywhere along the volume bar, or use its minus/plus buttons. Changes
 save automatically and apply to the next alert. Volume 0 is silent; previews
 also use this volume. Preview works even when automatic alerts are switched off.
+
+**Foreground** and **Background** independently control where automatic alerts
+may play. Both default to **on**, including when upgrading existing preferences.
+Foreground means the agent pane selected inside Herdr; other panes, tabs, and
+workspaces count as background. This uses Herdr's native pane selection, so
+switching to another app doesn't itself change these categories.
+
+The event category and the foreground/background switch must both be enabled
+for a sound to play. Turning both context switches off silences automatic
+alerts. Muted events aren't replayed when you re-enable a context. Explicit
+previews still play at the selected volume.
 
 The checkboxes independently control these alerts:
 
@@ -117,6 +146,8 @@ Its `settings.json` contains:
   "enabled": true,
   "volume": 60,
   "sound": "pomodoro",
+  "foreground": true,
+  "background": true,
   "finished": true,
   "narration": false,
   "questions": true,
@@ -127,7 +158,10 @@ Its `settings.json` contains:
 Existing `attention` settings migrate automatically to `questions` and
 `approvals`. Narration starts off, and your chosen sound, volume, and master
 switch are retained. Reopen the settings tab after updating to see the new
-checkboxes.
+checkboxes. Foreground and background are enabled automatically for preferences
+saved before those options existed. If a pane's focus is unavailable, alerts
+still work with both contexts enabled; with a context restriction, the plugin
+stays quiet rather than guessing.
 
 For scripts: `python3 noisy-herdr.py toggle`, `enable`, `disable`, or `status`.
 If you want to manage Herdr's built-in sounds yourself, install with

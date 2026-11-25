@@ -11,6 +11,7 @@ import re
 import subprocess
 import time
 from dataclasses import dataclass
+from typing import Optional
 
 ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
 QUESTION_HEADER = re.compile(r"^\s*Question\s+\d+\s*/\s*\d+\b", re.I)
@@ -31,6 +32,7 @@ SETTLE_SECONDS = .4
 class Observation:
     category: str
     identity: str = ""
+    foreground: Optional[bool] = None
 
 
 def fingerprint(lines):
@@ -38,6 +40,12 @@ def fingerprint(lines):
 
 
 def classify_view(text, info, event_status):
+    focused = info.get("focused")
+    foreground = focused if type(focused) is bool else None
+
+    def observe(category, identity=""):
+        return Observation(category, identity, foreground)
+
     text = ANSI.sub("", text).replace("\r", "")
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     tail = lines[-8:]
@@ -47,7 +55,7 @@ def classify_view(text, info, event_status):
     approval_footer = next((line for line in reversed(tail) if APPROVAL_FOOTER.search(line)), None)
     footer = question_footer or approval_footer
     if timer and (footer is None or timer.start() > text.rfind(footer)):
-        return Observation("narration")
+        return observe("narration")
     if question_footer:
         headers = [i for i, line in enumerate(lines) if QUESTION_HEADER.search(line)]
         if headers:
@@ -55,27 +63,27 @@ def classify_view(text, info, event_status):
             # Header + question identify the request. Moving a selection or
             # typing notes must not ring again for that same request.
             prompt = lines[start:start + 2]
-            return Observation("questions", fingerprint(prompt))
+            return observe("questions", fingerprint(prompt))
     if approval_footer and CHOICE.search(text):
         headers = [i for i, line in enumerate(lines) if APPROVAL_HEADER.search(line)]
         if headers:
             start = headers[-1]
             body = [line for line in lines[start:] if not re.match(r"^[›❯>]?\s*\d+[.)]", line)]
-            return Observation("approvals", fingerprint(body))
+            return observe("approvals", fingerprint(body))
     live_status = info.get("agent_status", event_status)
     if live_status in ("working", "blocked", "unknown"):
-        return Observation("narration")
+        return observe("narration")
     if live_status in ("idle", "done"):
         # Herdr's completion marker is independent of whether the tab was seen.
         # A pause without that evidence is not a finished Codex turn.
         completion = info.get("completion_seq")
         if completion is not None and completion == info.get("state_change_seq"):
-            return Observation("finished", str(completion))
+            return observe("finished", str(completion))
         if info.get("agent") == "codex":
-            return Observation("narration")
+            return observe("narration")
         # Other agents/older APIs may not expose sequence evidence.
-        return Observation("finished")
-    return Observation("narration")
+        return observe("finished")
+    return observe("narration")
 
 
 def inspect_event(pane_id, status):
