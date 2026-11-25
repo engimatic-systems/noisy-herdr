@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="504" viewBox="0 0 680 504" role="img" aria-label="Noisy Herdr settings: volume, sounds, finished tasks, questions, approvals, and narration switched off">
+<rect width="680" height="504" rx="14" fill="#191b1b"/>
+<g font-family="Menlo,Consolas,monospace" font-size="13">
+<text x="48.6" y="40" fill="#f0e7d1" font-weight="700" xml:space="preserve">(o)  NOISY HERDR</text>
+<text x="548.8" y="40" fill="#9b9b91" font-weight="400" xml:space="preserve">[ Close ]</text>
+<text x="48.6" y="57" fill="#9b9b91" font-weight="400" xml:space="preserve">A little bing when your agents are ready.</text>
+<rect x="46.6" y="78" width="192.6" height="18" rx="3" fill="#e9a16a"/>
+<text x="48.6" y="91" fill="#191b1b" font-weight="700" xml:space="preserve">Sound alerts    [ ON  ]</text>
+<text x="48.6" y="108" fill="#9b9b91" font-weight="400" xml:space="preserve">Plays in foreground and background.</text>
+<text x="48.6" y="142" fill="#f0e7d1" font-weight="700" xml:space="preserve">VOLUME</text>
+<text x="122.4" y="142" fill="#f0e7d1" font-weight="400" xml:space="preserve">[-]</text>
+<text x="163.4" y="142" fill="#f0e7d1" font-weight="700" xml:space="preserve">=======================O---------------</text>
+<text x="499.6" y="142" fill="#f0e7d1" font-weight="400" xml:space="preserve">[+]</text>
+<text x="540.6" y="142" fill="#f0e7d1" font-weight="400" xml:space="preserve"> 60%</text>
+<text x="48.6" y="176" fill="#f0e7d1" font-weight="700" xml:space="preserve">SOUND</text>
+<text x="122.4" y="176" fill="#9b9b91" font-weight="400" xml:space="preserve">Click to choose and listen</text>
+<text x="48.6" y="210" fill="#f0e7d1" font-weight="700" xml:space="preserve">(*) Pomodoro bing     A bright, ringing kitchen timer</text>
+<text x="48.6" y="227" fill="#f0e7d1" font-weight="400" xml:space="preserve">( ) Glass ping        A clear little tap on crystal</text>
+<text x="48.6" y="244" fill="#f0e7d1" font-weight="400" xml:space="preserve">( ) Soft chime        Two gentle, ascending notes</text>
+<text x="48.6" y="261" fill="#f0e7d1" font-weight="400" xml:space="preserve">( ) Woodblock         A short, mellow wooden knock</text>
+<text x="48.6" y="278" fill="#f0e7d1" font-weight="400" xml:space="preserve">( ) Arcade            A cheerful, three-note power-up</text>
+<text x="48.6" y="312" fill="#f0e7d1" font-weight="700" xml:space="preserve">[ &gt; Preview sound ]</text>
+<text x="48.6" y="346" fill="#f0e7d1" font-weight="400" xml:space="preserve">[x] Finished tasks</text>
+<text x="253.6" y="346" fill="#f0e7d1" font-weight="400" xml:space="preserve">[x] Agent questions</text>
+<text x="48.6" y="363" fill="#f0e7d1" font-weight="400" xml:space="preserve">[x] Approval requests</text>
+<text x="253.6" y="363" fill="#f0e7d1" font-weight="400" xml:space="preserve">[ ] Narration / updates</text>
+<text x="48.6" y="397" fill="#9b9b91" font-weight="400" xml:space="preserve">Your changes save automatically.</text>
+<text x="48.6" y="431" fill="#9b9b91" font-weight="400" xml:space="preserve">Tab / arrows to move   Space to select   - / + volume   Q close</text>
+</g>
+</svg>
